@@ -121,7 +121,7 @@ passport.use(
         }
       );
     } catch (error) {
-      return done(error);
+      return done({message:error});
     }
   })
 );
