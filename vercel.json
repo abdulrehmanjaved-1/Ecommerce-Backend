@@ -51,11 +51,11 @@
         "dest": "index.js"
       },
       {
-        "src": "/cart",
+        "src": "/carts",
         "dest": "index.js"
       },
       {
-        "src": "/cart/(.*)",
+        "src": "/carts/(.*)",
         "dest": "index.js"
       },
       {
