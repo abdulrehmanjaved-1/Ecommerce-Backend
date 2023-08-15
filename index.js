@@ -22,6 +22,7 @@ require("dotenv").config();
 const cors = require("cors");
 const { User } = require("./model/User");
 const { isAuth, sanitizeUser, cookieExtractor } = require("./serveices/Common");
+const path=require('path')
 
 //Webhook
 const endpointSecret = process.env.ENDPOINT_SECRET;
@@ -66,7 +67,7 @@ connectToMongodb(URL, dataBase, collection);
 
 //MiddleWares 
 // server.use(express.raw({type: 'application/json'}))
-server.use(express.static('build'))
+server.use(express.static(path.resolve(__dirname,'build')))
 server.use(cookieParser());
 server.use(express.json());
 server.use(
