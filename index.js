@@ -22,12 +22,13 @@ require("dotenv").config();
 const cors = require("cors");
 const { User } = require("./model/User");
 const { isAuth, sanitizeUser, cookieExtractor } = require("./serveices/Common");
-const path=require('path')
+const path=require('path');
+const { Order } = require("./model/Order");
 
 //Webhook
 const endpointSecret = process.env.ENDPOINT_SECRET;
 
-server.post('/webhook', express.raw({type: 'application/json'}), (request, response) => {
+server.post('/webhook', express.raw({type: 'application/json'}), async(request, response) => {
   const sig = request.headers['stripe-signature'];
 
   let event;
@@ -43,6 +44,9 @@ server.post('/webhook', express.raw({type: 'application/json'}), (request, respo
   switch (event.type) {
     case 'payment_intent.succeeded':
       const paymentIntentSucceeded = event.data.object;
+      const order=await Order.findById(paymentIntentSucceeded.metadata.orderId);
+      order.paymentStatus='received';
+      await order.save();
       // Then define and call a function to handle the event payment_intent.succeeded
       break;
     // ... handle other event types
