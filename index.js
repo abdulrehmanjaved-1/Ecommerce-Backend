@@ -107,7 +107,7 @@ server.use("/carts", isAuth(), cartRouter.router);
 server.use("/orders", isAuth(), OrdersRouter.router); 
 //Mail-endpoint
 
-
+//
 server.get('*',(req,res)=>res.sendFile(path.resolve('build','index.html')))
 //Passport Strategies
 passport.use(
