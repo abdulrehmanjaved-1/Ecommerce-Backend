@@ -60,7 +60,6 @@ exports.loginUser = async (req, res) => {
     .json({ id: user.id, role: user.role });
 };
 exports.logout = async (req, res) => {
-  const user = req.user;
   res
     .cookie("jwt", null, {
       expires: new Date(Date.now()),
