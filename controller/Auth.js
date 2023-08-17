@@ -62,12 +62,21 @@ exports.checkAuth = async (req, res) => {
   }
 };
 exports.resetPasswordRequest = async (req, res) => {
-  const resetPage="http://localhost:8080/reset-password"
-  const subject="reset password for e-commerce";
-  const html=`<p>Click <a href='${resetPage}'>here</a> to reset password</p>`
-  if (req.body.email) {
-   const response=await sendMail({to:req.body.email,subject,html});
-   res.send(response)
+  const email=req.body.email;
+  const user=await User.findOne({email:email});
+  if(user){
+    const token=crypto.randomBytes(48).toString('hex');
+    user.resetPasswordToken=token;
+    await user.save();
+    const resetPageLink="http://localhost:8080/reset-password?token="+token+"&email="+email;
+    const subject="reset password for e-commerce";
+    const html=`<p>Click <a href='${resetPageLink}'>here</a> to reset password</p>`
+    if (email) {
+     const response=await sendMail({to:req.body.email,subject,html});
+     res.send(response)
+    }else{
+      res.sendStatus(400);
+    }
   }else{
     res.sendStatus(400);
   }
