@@ -1,3 +1,5 @@
+// process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;a
+
 const express = require("express");
 const server = express();
 const mongoose = require("mongoose");
@@ -7,6 +9,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const cookieParser=require('cookie-parser');
+
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const connectToMongodb = require("./Connection");
@@ -24,6 +27,12 @@ const { User } = require("./model/User");
 const { isAuth, sanitizeUser, cookieExtractor } = require("./serveices/Common");
 const path=require('path');
 const { Order } = require("./model/Order");
+
+
+
+
+
+
 
 //Webhook
 const endpointSecret = process.env.ENDPOINT_SECRET;
@@ -96,6 +105,9 @@ server.use("/user", isAuth(), usersRouter.router);
 server.use("/auth", authRouter.router);
 server.use("/carts", isAuth(), cartRouter.router);
 server.use("/orders", isAuth(), OrdersRouter.router); 
+//Mail-endpoint
+
+
 server.get('*',(req,res)=>res.sendFile(path.resolve('build','index.html')))
 //Passport Strategies
 passport.use(

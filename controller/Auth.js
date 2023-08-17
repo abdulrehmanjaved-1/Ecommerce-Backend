@@ -1,6 +1,6 @@
 const { User } = require("../model/User");
 const crypto = require("crypto");
-const { sanitizeUser } = require("../serveices/Common");
+const { sanitizeUser, sendMail } = require("../serveices/Common");
 const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator"); // Import necessary dependencies
 
@@ -59,5 +59,16 @@ exports.checkAuth = async (req, res) => {
     res.json(req.user);
   }else{
     res.sendStatus(401);
+  }
+};
+exports.resetPasswordRequest = async (req, res) => {
+  const resetPage="http://localhost:8080/reset-password"
+  const subject="reset password for e-commerce";
+  const html=`<p>Click <a href='${resetPage}'>here</a> to reset password</p>`
+  if (req.body.email) {
+   const response=await sendMail({to:req.body.email,subject,html});
+   res.send(response)
+  }else{
+    res.sendStatus(400);
   }
 };
