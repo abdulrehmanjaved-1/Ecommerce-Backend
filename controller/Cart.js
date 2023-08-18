@@ -17,8 +17,11 @@ exports.addToCart = async (req, res) => {
     const result = await doc.populate("product");
     res.status(201).json(result);
   } catch (err) {
+    console.error(err); // Log the error for debugging
+    console.log(err.errors); // Log the validation errors
     res.status(400).json(err);
   }
+  
 };
 exports.deleteFromCart = async (req, res) => {
     const { id } = req.params;
