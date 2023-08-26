@@ -1,12 +1,14 @@
 const express=require("express");
-const { createProduct, fetchAllProducts, fetchProductById, updateProduct } = require("../controller/Product");
+const { createProduct, fetchAllProducts, fetchProductById, updateProduct, fetchProductBySearch } = require("../controller/Product");
 const { Product } = require("../model/Product");
 const router=express.Router();
 
 router.post("/",createProduct)
        .get('/',fetchAllProducts)
+       .get(`/search`,fetchProductBySearch)
        .get('/:id',fetchProductById)
        .patch('/:id',updateProduct)
+
 //        .get('/update/test',async(req,res)=>{
 //             // For adding discountPrice to existing data : delete this code after use
 //            const products = await Product.find({});
