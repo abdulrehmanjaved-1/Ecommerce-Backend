@@ -9,7 +9,6 @@ const LocalStrategy = require("passport-local").Strategy;
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const cookieParser=require('cookie-parser');
-
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const connectToMongodb = require("./Connection");
