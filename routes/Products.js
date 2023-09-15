@@ -1,13 +1,14 @@
 const express=require("express");
 const { createProduct, fetchAllProducts, fetchProductById, updateProduct, fetchProductBySearch } = require("../controller/Product");
 const { Product } = require("../model/Product");
+const { isAuth } = require("../serveices/Common");
 const router=express.Router();
 
-router.post("/",createProduct)
+router.post("/",isAuth(),createProduct)
        .get('/',fetchAllProducts)
        .get(`/search`,fetchProductBySearch)
        .get('/:id',fetchProductById)
-       .patch('/:id',updateProduct)
+       .patch('/:id',isAuth(),updateProduct)
 
 //        .get('/update/test',async(req,res)=>{
 //             // For adding discountPrice to existing data : delete this code after use
