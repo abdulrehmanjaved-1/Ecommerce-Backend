@@ -1,8 +1,28 @@
-const client = require("../Redis");
 const { Product } = require("../model/Product");
+// const client=require('../Redis')
+const { createClient } = require('redis');
+require('dotenv').config();
 
+const client = createClient({
+  password: process.env.REDIS_PASSWORD,
+  socket: {
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
+  },
+});
+
+// Handle Redis client errors
+client.on('error', (err) => {
+  console.error('Redis client error:', err);
+});
+
+// Connect to Redis
+client.connect();
 
 exports.createProduct = async (req, res) => {
+  if(client.get("products")){
+    await client.del("products")
+  }
   const product = new Product(req.body);
   product.discountPrice = Math.round(
     product.price * (1 - product.discountPercentage / 100)
@@ -17,7 +37,8 @@ exports.createProduct = async (req, res) => {
 exports.fetchAllProducts = async (req, res) => {
   try {
     const cachedData = await client.get('products');
-    if (cachedData) {
+    if (cachedData && !(req.query.category) && (req.query._page==1) && !(req.query.product) && !(req.query.brand) && !(req.query._sort) && !(req.query._order)) {
+      console.log('cached data is here')
       const parsedData = JSON.parse(cachedData);
       res.status(200).json(parsedData);
     } else {
@@ -59,9 +80,11 @@ exports.fetchAllProducts = async (req, res) => {
       const docs = await query.exec();
 
       // Cache the data in Redis
+      // await client.connect()
+      // await client.quit()
+      res.set("X-Total-Count", totalDocs);
       await client.set('products', JSON.stringify(docs), 'EX', 86400); // Cache for 24 hours
 
-      res.set("X-Total-Count", totalDocs);
       res.status(200).json(docs);
     }
   } catch (err) {
@@ -97,7 +120,9 @@ exports.fetchProductBySearch = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
   const { id } = req.params;
-
+  if(client.get("products")){
+    await client.del("products")
+  }
   try {
     const product = await Product.findByIdAndUpdate(id, req.body, {
       new: true,
