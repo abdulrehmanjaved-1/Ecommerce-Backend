@@ -10,7 +10,6 @@ const client = createClient({
     port: process.env.REDIS_PORT,
   },
 });
-
 // Handle Redis client errors
 client.on('error', (err) => {
   console.error('Redis client error:', err);
